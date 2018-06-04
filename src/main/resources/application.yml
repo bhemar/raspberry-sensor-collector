@@ -1,0 +1,24 @@
+server.port: 9111
+
+logging:
+  level:
+    ROOT: INFO
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"
+
+management.endpoints:
+    enabled-by-default: true
+    web.exposure.include: '*'
+    prometheus:
+        enabled: true
+
+sensor:
+  temperature-humidity:
+    enabled: true
+    gpio-pin: 7
+  laser:
+    enabled: true
+    gpio-pin: 2
+  motion:
+    enabled: true
+    gpio-pin: 29

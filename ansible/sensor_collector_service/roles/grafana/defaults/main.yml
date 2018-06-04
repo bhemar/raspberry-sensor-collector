@@ -1,0 +1,2 @@
+grafana_dashboards_location: /var/lib/grafana/dashboards
+prometheus_data_source_name: raspberry-prometheus

@@ -1,0 +1,6 @@
+- name: Restart Grafana
+  become: true
+  systemd:
+    name: grafana-server
+    enabled: yes
+    state: restarted

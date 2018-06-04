@@ -1,0 +1,12 @@
+- name: Copy dashboard
+  become: true
+  template:
+    src: "{{ item }}"
+    dest: "{{ grafana_dashboards_location }}/raspberry-sensors.json"
+    owner: grafana
+    group: grafana
+  with_items:
+  - raspberry-sensors.json.j2
+  notify: Restart Grafana
+
+- meta: flush_handlers

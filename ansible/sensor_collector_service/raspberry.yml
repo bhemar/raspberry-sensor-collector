@@ -1,0 +1,9 @@
+- name: Install Grafana service
+  hosts: hosts
+  roles:
+  - { role: 'grafana', tags: 'grafana' }
+
+- name: Install Sensor collector Java service
+  hosts: hosts
+  roles:
+  - { role: 'sensor-collector-service', tags: 'sensor-collector-service' }

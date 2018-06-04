@@ -1,0 +1,89 @@
+#!/bin/sh
+### BEGIN INIT INFO
+# Provides:          {{ sensor_collector_service_name }}
+# Required-Start:    $local_fs $network $named $time $syslog
+# Required-Stop:     $local_fs $network $named $time $syslog
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Description:       Sensor collector service - collects sensor data
+### END INIT INFO
+
+RUNAS=root
+APPHOME={{ sensor_collector_service_install_path }}
+JAR={{ sensor_collector_service_jar_name }}
+JVM_ARGS="-Dpi4j.debug -Dpi4j.linking=dynamic -Xmx128m -Xms128m"
+
+PIDFILE=/var/run/{{ sensor_collector_service_name }}.pid
+LOGFILE=/var/log/{{ sensor_collector_service_name }}.log
+
+start() {
+  if [ -f /var/run/$PIDNAME ] && kill -0 $(cat /var/run/$PIDNAME); then
+    echo 'Service already running'
+    return 1
+  fi
+  echo 'Starting service…'
+  local CMD="java $JVM_ARGS -jar $APPHOME/$JAR &> \"$LOGFILE\" & echo \$!"
+  su -c "$CMD" $RUNAS > "$PIDFILE"
+  echo 'Service started'
+}
+
+stop() {
+  if [ ! -f "$PIDFILE" ] || ! kill -0 $(cat "$PIDFILE"); then
+    echo 'Service not running'
+    return 1
+  fi
+  echo 'Stopping service…'
+  kill -15 $(cat "$PIDFILE") && rm -f "$PIDFILE"
+  echo 'Service stopped'
+}
+
+uninstall() {
+  echo -n "Are you really sure you want to uninstall this service? That cannot be undone. [yes|No] "
+  local SURE
+  read SURE
+  if [ "$SURE" = "yes" ]; then
+    stop
+    rm -f "$PIDFILE"
+    echo "Notice: log file is not be removed: '$LOGFILE'" >&2
+    update-rc.d -f {{ sensor_collector_service_name }} remove
+    rm -fv "$0"
+  fi
+}
+
+get_pid() {
+    cat "$PIDFILE"
+}
+
+is_running() {
+    [ -f "$PIDFILE" ] && ps -p `get_pid` > /dev/null 2>&1
+}
+
+status() {
+    if is_running; then
+        echo "Running"
+    else
+        echo "Stopped"
+        exit 1
+    fi
+}
+
+case "$1" in
+  start)
+    start
+    ;;
+  stop)
+    stop
+    ;;
+  uninstall)
+    uninstall
+    ;;
+  restart)
+    stop
+    start
+    ;;
+  status)
+    status
+    ;;
+  *)
+    echo "Usage: $0 {start|stop|restart|status|uninstall}"
+esac

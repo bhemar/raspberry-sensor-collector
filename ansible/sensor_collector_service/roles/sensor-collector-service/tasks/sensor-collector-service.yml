@@ -1,0 +1,32 @@
+- name: Creates directory for service
+  become: true
+  file:
+    path: "{{ sensor_collector_service_install_path }}"
+    state: directory
+    owner: pi
+    group: pi
+    mode: 0744
+
+- name: Copy service JAR
+  copy:
+    src: "{{ sensor_collector_service_jar_location }}/{{ sensor_collector_service_jar_name }}"
+    dest: "{{ sensor_collector_service_install_path }}"
+  notify: restart sensor-collector-service
+
+- name: Copy service init script
+  become: true
+  template:
+    src: sensor-collector-service.j2
+    dest: /etc/init.d/{{ sensor_collector_service_name }}
+    mode: 0744
+  register: initscript
+  notify: update-rc.d
+
+- name: Start service
+  become: true
+  service:
+    name: "{{ sensor_collector_service_name }}"
+    state: started
+    enabled: yes
+
+- meta: flush_handlers

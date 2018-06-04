@@ -1,0 +1,7 @@
+# Local config (build)
+sensor_collector_service_jar_location: ~/IdeaProjects/sensor-collector-service/target
+sensor_collector_service_jar_name: sensor-collector-service-1.0.0-SNAPSHOT.jar
+
+# Raspberry PI config
+sensor_collector_service_install_path: /opt/sensor-collector-service/java-service
+sensor_collector_service_name: sensor-collector-service
