@@ -22,6 +22,8 @@
   register: initscript
   notify: update-rc.d
 
+- meta: flush_handlers
+
 - name: Start service
   become: true
   service:
@@ -29,4 +31,3 @@
     state: started
     enabled: yes
 
-- meta: flush_handlers
