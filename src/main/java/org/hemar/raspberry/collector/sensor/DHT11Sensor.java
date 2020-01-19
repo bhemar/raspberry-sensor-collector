@@ -2,15 +2,19 @@ package org.hemar.raspberry.collector.sensor;
 
 import com.pi4j.wiringpi.Gpio;
 import lombok.extern.slf4j.Slf4j;
-import org.hemar.raspberry.collector.utils.ThreadUtils;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 
 import java.util.Optional;
 
 @Slf4j
 @Component
+@ConditionalOnProperty(value = "sensor.temperature-humidity.enabled", havingValue = "true")
 public class DHT11Sensor {
+
+    private static final int MAX_ATTEMPTS = 30;
+    private static final int SLEEP_BETWEEN_RETRIES_DURATION_MILLIS = 1000;
 
     private static final int MAX_TIMINGS = 85;
 
@@ -20,14 +24,19 @@ public class DHT11Sensor {
     Optional<SensorData> readSensorData() {
         int attempt = 0;
 
-        while (attempt++ < 30) {
+        while (attempt++ < MAX_ATTEMPTS) {
             SensorData data = readData();
 
             if (data != null) {
                 return Optional.of(data);
             }
 
-            ThreadUtils.sleepUnchecked(1000);
+            try {
+                Thread.sleep(SLEEP_BETWEEN_RETRIES_DURATION_MILLIS);
+            } catch (InterruptedException e) {
+                log.warn("Sleep interrupted: {}", e.getMessage(), e);
+                return Optional.empty();
+            }
         }
 
         log.warn("Could not read sensor data.");

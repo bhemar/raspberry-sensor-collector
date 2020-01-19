@@ -7,7 +7,7 @@
     group: pi
     mode: 0744
 
-- name: Copy service JAR
+- name: Copy JAR
   copy:
     src: "{{ sensor_collector_service_jar_location }}/{{ sensor_collector_service_jar_name }}"
     dest: "{{ sensor_collector_service_install_path }}"
@@ -20,7 +20,9 @@
     dest: /etc/init.d/{{ sensor_collector_service_name }}
     mode: 0744
   register: initscript
-  notify: update-rc.d
+  notify:
+    - update-rc.d
+    - restart sensor-collector-service
 
 - meta: flush_handlers
 

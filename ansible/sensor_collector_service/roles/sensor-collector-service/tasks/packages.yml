@@ -7,7 +7,7 @@
 - name: Install Java
   become: true
   apt:
-    name: openjdk-8-jre
+    name: openjdk-11-jre
     state: present
 
 - name: Install the package "wiringpi"

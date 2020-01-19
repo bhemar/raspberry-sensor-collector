@@ -3,9 +3,9 @@ package org.hemar.raspberry.collector.sensor;
 import com.pi4j.io.gpio.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.hemar.raspberry.collector.config.ConditionalOnLaserSensorEnabled;
 import org.hemar.raspberry.collector.service.GpioPinProvider;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 
 /**
@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-@ConditionalOnProperty(value = "sensor.laser.enabled", havingValue = "true")
+@ConditionalOnLaserSensorEnabled
 public class LaserSensor {
 
     private final GpioPinProvider gpioPinProvider;

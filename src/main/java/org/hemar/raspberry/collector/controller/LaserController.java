@@ -1,14 +1,15 @@
 package org.hemar.raspberry.collector.controller;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.hemar.raspberry.collector.config.ConditionalOnLaserSensorEnabled;
 import org.hemar.raspberry.collector.sensor.LaserSensor;
-import org.hemar.raspberry.collector.utils.ThreadUtils;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+@Slf4j
 @RestController
 @AllArgsConstructor
-@ConditionalOnProperty(value = "sensor.laser.enabled", havingValue = "true")
+@ConditionalOnLaserSensorEnabled
 public class LaserController {
 
     private final LaserSensor laserSensor;
@@ -21,10 +22,17 @@ public class LaserController {
     @GetMapping("/laser/blink")
     public void blink() {
         int count = 0;
+
         while(count < 50) {
             laserSensor.toggle();
             count++;
-            ThreadUtils.sleepUnchecked(500);
+
+            try {
+                Thread.sleep(500);
+            } catch (InterruptedException e) {
+                log.warn("Sleep interrupted: {}", e.getMessage(), e);
+                return;
+            }
         }
     }
 }

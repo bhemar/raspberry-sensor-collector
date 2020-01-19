@@ -1,9 +1,9 @@
+- name: update-rc.d
+  become: true
+  command: update-rc.d {{ sensor_collector_service_name }} defaults
+
 - name: restart sensor-collector-service
   become: true
   service:
     name: "{{ sensor_collector_service_name }}"
     state: restarted
-
-- name: update-rc.d
-  become: true
-  command: update-rc.d {{ sensor_collector_service_name }} defaults

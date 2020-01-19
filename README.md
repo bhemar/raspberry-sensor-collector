@@ -32,31 +32,14 @@ By default, application will read data from all sensors. If you don't have all s
 ### Connecting sensors with Raspberry PI
 
 If you are not familiar with GPIO pin numbering, check [documentation](https://www.raspberrypi.org/documentation/usage/gpio/). 
-Connect sensor pins with Raspberry GPIO pins:
 
-### DHT11 Temperature & humidity sensor
+Connect __signal__ sensor pins with following Raspberry GPIO pins:
 
-| Sensor pin |Raspberry GPIO pin|
-|:----------:|:----------------:|
-|    Vcc     |        5V        |
-|   Ground   |      ground      |
-|   Signal   |         7        |
-
-### Laser sensor
-
-|   Sensor pin    | Raspberry GPIO pin |
-|:---------------:|:------------------:|
-|   Vcc (middle)  |         5V         |
-|    Ground (-)   |       ground       |
-|    Signal (S)   |          2         |
-
-### Motion sensor
-
-| Sensor pin | Raspberry GPIO pin |
-|:----------:|:------------------:|
-|     Vcc    |         5V         |
-|   Ground   |       ground       |
-|   Signal   |         29         |
+| Sensor                |Raspberry GPIO pin|
+|:---------------------:|:----------------:|
+| DHT11 Temperature & humidity sensor | 7  |
+| Laser                               | 2  |
+| Motion                              | 29 |
 
 GPIO signal pins can be changed in _application.yml_ property file.
 
@@ -67,11 +50,11 @@ GPIO signal pins can be changed in _application.yml_ property file.
 Building the project
 
 * Maven 3
-* Java 8 JDK 
+* Java 11 JDK 
 
 Running the application on Raspberry PI
 
-* Java 8 JRE installed (included in Ansible playbook)
+* Java 11 JRE installed (included in Ansible playbook)
 * [wiringpi](http://wiringpi.com/download-and-install/) library installed (included in Ansible playbook)
 
 ### Build the project
@@ -110,7 +93,7 @@ Run Ansible playbook:
 
 ```
 cd ansible/sensor_collector_service/
-ansible-playbook raspberry.yml -i hosts -u pi -k -K --tags "sensor-collector-service"
+ansible-playbook raspberry.yml -i hosts -u pi -k -K --tags "sensor-collector-service" -D
 ```
 
 Enter your Raspberry password. 
